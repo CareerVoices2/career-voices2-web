@@ -49,5 +49,7 @@ flake8 main.py
 - 開発環境
     - `.env`
 ```
-VOICE_API_URL=voice_api_url
+VOICE_API_URL="VOICE_API_URL"
+VOICE_API_URL_TEST="VOICE_API_URL_TEST"
+API_TOKEN="API_TOKEN"
 ```

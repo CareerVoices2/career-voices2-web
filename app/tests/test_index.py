@@ -16,3 +16,10 @@ class TestIndex(unittest.TestCase):
         """
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
+
+    def test_voice_detail(self):
+        """
+        ボイス詳細ページへのアクセス
+        """
+        response = self.app.get('/voice/001')
+        self.assertEqual(response.status_code, 200)
