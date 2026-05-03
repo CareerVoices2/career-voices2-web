@@ -1,0 +1,17 @@
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: career_voices2_web
+    env_file:
+      - .env
+  nginx:
+    build:
+      context: ./infra
+      dockerfile: Dockerfile
+    container_name: nginx_career_voices2_web
+    ports:
+      - "80:8080"
+    depends_on:
+      - web
