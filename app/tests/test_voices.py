@@ -12,7 +12,8 @@ class TestVoices(unittest.TestCase):
         Voicesクラスのインスタンスを作成するセットアップ
         """
         self.voices_api_url = os.getenv('VOICES_API_URL_TEST')
-        self.voices = Voices(self.voices_api_url)
+        self.token = os.getenv('API_TOKEN')
+        self.voices = Voices(self.voices_api_url, self.token)
 
     def test_get_voices(self):
         """
