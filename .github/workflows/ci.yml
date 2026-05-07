@@ -4,6 +4,10 @@ on:
     push:
     pull_request:
 
+env:
+    VOICES_API_URL_TEST: ${{ secrets.VOICES_API_URL_TEST }}
+    API_TOKEN: ${{ secrets.API_TOKEN }}
+
 jobs:
     test:
         runs-on: ubuntu-latest
