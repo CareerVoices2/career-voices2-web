@@ -30,7 +30,7 @@ class Voices():
                 "id": "001",
                 "title": "「テスト記事１」",
                 "description": "テスト詳細説明１"
-            },r
+            },
             {
                 "id": "002",
                 "title": "「テスト記事２」",
@@ -204,6 +204,7 @@ class Voices():
                             key, value = line.split(":", 1)
                             key = key.strip()
                             value = value.strip()
+
                             #valueが数値ならintにする
                             if value.isdecimal():
                                 value = int(value)
@@ -211,6 +212,7 @@ class Voices():
                             #offer_timingはさらにgradeとmonthに分ける
                             if key == "offer_timing":
                                 offer_timing = {}
+
                                 #offer_timingの情報はkey: valueの形式で書いてあるので、:で分割して保存する
                                 for offer_line in header_lines[line_num+1:]:
                                     offer_line = offer_line.strip()
@@ -222,6 +224,7 @@ class Voices():
                                         offer_value = int(offer_value.strip())
                                         offer_timing[offer_key] = offer_value
                                         cnt += 1
+
                                         #offer_timingはgradeとmonthの2つの情報があるので、両方取得したらループを抜ける
                                         if cnt == 2:
                                             #line_numを更新して、次の行から処理するようにする
@@ -234,7 +237,7 @@ class Voices():
                                 profile[key] = offer_timing
                             else:
                                 profile[key] = value
-                        #"descripthion:"以降は不要なので、ループを抜ける
+                        
 
 
                     
