@@ -1,0 +1,50 @@
+h1 {
+    color: #111827;
+}
+
+h2 {
+    background: linear-gradient(to right, lightblue, white);
+    color: #374151;
+    padding: 10px;
+}
+
+h3 {
+    border-left: 5px ridge lightblue;
+    color: #374151;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+.box {
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.other {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.other-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.other:hover {
+    border: 1px solid #3b82f6;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
