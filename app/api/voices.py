@@ -79,11 +79,12 @@ class Voices():
                 
                 #説明はヘッダの中にある。
                 for line in header.splitlines():
-                    #Tabがあったりなかったりするのでtabを消して処理しやすくする
+                    #Tabがあったりなかったりするので消して処理しやすくする
                     line = line.strip()
 
                     if DEBUG:
                         print("line:", line)
+                    
                     #説明はtext:から始まる行に書いてある
                     if line.startswith("text:"):
                         if DEBUG:
@@ -149,43 +150,111 @@ class Voices():
         import json
         import requests
 
-        DEBUG = True
+        DEBUG = False
         try:
-            print("voice_detail")   
             response = requests.get(self.url, headers=self.headers)
             response.raise_for_status()
-            url = f"{self.url}/{voice_id}.md"
+            
+            #APIからのレスポンスをPythonの辞書型に変換する
+            files = response.json()
 
-            md_file = requests.get(url, headers=self.headers)
-            md_file.raise_for_status()
-
-            md_content = md_file.text
+            #APIからのレスポンスをJSON形式で取得して、整形して表示する
+            print_data = json.dumps(files, indent=4, ensure_ascii=False)
             if DEBUG:
-                print("md_content:\n", md_content)
+                print("data:", print_data)
 
-            #内容とヘッダが---で区切られてるのでいったん分ける
-            md_parts = md_content.split("---")
-            header = md_parts[1]
-            body = md_parts[2]
+            #filesはファイルの一覧をもっているので、ここから必要な情報を抜き取る
+            for file in files:
+                if file["name"].replace(".md", "") == voice_id:
+                    if not file["name"].endswith((".md")):
+                        continue
 
-            #タイトルは内容の先頭。一文字目の#を削除した。
-            title = body.strip().splitlines()[0].replace("#", "").strip()
-            voice = body.strip()
-            profile = "aaa"
+                    md_file = requests.get(file["download_url"], headers=self.headers)
+                    md_file.raise_for_status()
+                    md_content = md_file.text
+                    if DEBUG:
+                        print("md_content:\n", md_content)
 
-            if DEBUG:
-                print("profile:", profile)
-                print("title:", title)
-                print("voice:", voice)
-                print("------------------")
+                    #内容とヘッダが---で区切られてるのでいったん分ける
+                    md_parts = md_content.split("---")
+                    header = md_parts[1]
+                    body = md_parts[2]
 
+                    #profileはヘッダの情報を辞書型に変換して保存する
+                    profile = {}
+                    #ヘッダを行ごとに配列に格納する
+                    header_lines = header.splitlines()
+                    header_length = len(header_lines)
+                    cnt = 0
+                    line_num = 1
+                    #最初の行は不要なので、1行目から処理する
+                    while True:
+                        line_num += 1
+                        #Tabがあったりなかったりするので消して処理しやすくする
+                        line = header_lines[line_num].strip()
+                        if DEBUG:
+                            print("line:", line, "line_num:", line_num)
+
+                        #description以降は不要なので、description:から始まる行が出てきたらループを抜ける
+                        if line.startswith("description:"):
+                            break
+
+                        #profileの情報はkey: valueの形式で書いてあるので、:で分割して保存する
+                        if ":" in line:
+                            key, value = line.split(":", 1)
+                            key = key.strip()
+                            value = value.strip()
+                            #valueが数値ならintにする
+                            if value.isdecimal():
+                                value = int(value)
+
+                            #offer_timingはさらにgradeとmonthに分ける
+                            if key == "offer_timing":
+                                offer_timing = {}
+                                #offer_timingの情報はkey: valueの形式で書いてあるので、:で分割して保存する
+                                for offer_line in header_lines[line_num+1:]:
+                                    offer_line = offer_line.strip()
+                                    if ":" in offer_line:
+                                        offer_key, offer_value = offer_line.split(":", 1)
+                                        if DEBUG:
+                                            print("offer_line:", offer_line)
+                                        offer_key = offer_key.strip()
+                                        offer_value = int(offer_value.strip())
+                                        offer_timing[offer_key] = offer_value
+                                        cnt += 1
+                                        #offer_timingはgradeとmonthの2つの情報があるので、両方取得したらループを抜ける
+                                        if cnt == 2:
+                                            #line_numを更新して、次の行から処理するようにする
+                                            line_num += cnt
+                                            if DEBUG:
+                                                print("updated line_num:", line_num)
+                                            break
+                                    else:
+                                        break
+                                profile[key] = offer_timing
+                            else:
+                                profile[key] = value
+                        #"descripthion:"以降は不要なので、ループを抜ける
+
+
+                    
+                    #タイトルは内容の先頭。一文字目の#を削除した。
+                    title = body.strip().splitlines()[0].replace("#", "").strip()
+                
+                    #記事本文はタイトルの次の行から最後まで
+                    voice = "\n".join(body.strip().splitlines()[1:]).strip()
+                    
+                    if DEBUG:
+                        print("id:", voice_id)
+                        print("profile:", profile)
+                        print("title:", title)
+                        print("voice:", voice)
+                        print("------------------")
             return{
                 "profile": profile,
                 "title": title,
                 "voice": voice
             }
-
-
         except requests.exceptions.HTTPError as errh:
             print("HTTPError:", errh)
         except requests.exceptions.ConnectionError as errc:
@@ -194,4 +263,4 @@ class Voices():
             print("Timeout:", errt)
         except requests.exceptions.RequestException as err:
             print("RequestException:",err)
-        return None        
+        return None
