@@ -1,3 +1,28 @@
 body {
     background-color: aliceblue;
+    font-family: 'Noto Sans JP', sans-serif;
+    margin: 30px;
+    color: #363636;
+}
+
+.logo {
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 16px;
+}
+
+.logo p {
+    margin: 0;
+}
+
+.logo_text {
+    font-size: xx-large;
+}
+
+.copy-right {
+    text-align: center;
+    margin-top: 20px;
+    color: #6b7280;
 }

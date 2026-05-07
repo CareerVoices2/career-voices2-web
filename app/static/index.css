@@ -1,0 +1,28 @@
+h2 {
+    color: #111827;
+}
+
+h2 {
+    background: linear-gradient(to right, lightblue, white);
+    color: #374151;
+    padding: 10px;
+}
+
+.box {
+    background-color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+
+    border: 1px solid #e5e7eb;
+}
+
+.box-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.box:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+}
